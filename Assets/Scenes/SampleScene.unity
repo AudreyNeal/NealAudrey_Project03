@@ -536,16 +536,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 2
+  _typeOfMotion: 1
   PlayOnAwake: 1
-  _numberOfNodes: 1
   _nodes:
   - {fileID: 1359390007}
   - {fileID: 1221647126}
   - {fileID: 222402373}
   _waitTimes:
-  - 5
+  - 0
   - 2
   - 2
+  _reverse: 0
   _audioClip: {fileID: 0}
 --- !u!65 &1145811075
 BoxCollider:
