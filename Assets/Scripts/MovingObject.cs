@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.WindowsRuntime;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -79,18 +80,18 @@ public enum AudioPlayback
           _currentNode++;
         }
       }
-      if (_typeOfMotion == TypeOfMotion.BACK_AND_FORTH) 
-      { 
-      bool CycleMade = false;
-        if (CycleMade == true) 
+      if (_typeOfMotion == TypeOfMotion.BACK_AND_FORTH)
+      {
+        bool CycleMade = false;
+        if (CycleMade == true)
         {
           _currentNode = 0;
-        return; 
-        
-        }
-        
+          return;
 
-        if (_reverse == true )
+        }
+
+
+        if (_reverse == true)
         {
           _currentNode--;
         }
@@ -103,21 +104,29 @@ public enum AudioPlayback
           _reverse = true;
 
         }
-     
+
         if (_currentNode <= 0 && _reverse == true)
         {
-        _currentNode = 0;
-          CycleMade= true;
+          _currentNode = 0;
+          CycleMade = true;
         }
+      }
 
-
+      if (_typeOfMotion == TypeOfMotion.ONE_WAY)
+      {
+        _currentNode++;
+        if (_currentNode >= _nodes.Length - 1) 
+        {
+        _currentNode = _nodes.Length - 1;
+          return;
+        }
 
       }
     }
 
 
 
-      transform.position = Vector3.MoveTowards(gameObject.transform.position, _nodes[_currentNode].position, _speed * Time.deltaTime);
+    transform.position = Vector3.MoveTowards(gameObject.transform.position, _nodes[_currentNode].position, _speed * Time.deltaTime);
 
   }
 

@@ -536,7 +536,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 2
-  _typeOfMotion: 1
+  _typeOfMotion: 2
   PlayOnAwake: 1
   _nodes:
   - {fileID: 1359390007}
