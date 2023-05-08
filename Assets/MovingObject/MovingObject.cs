@@ -7,6 +7,7 @@ using UnityEngine;
 public class MovingObject : MonoBehaviour
 {
   [Header("Movement Settings")]
+  [Space(3)]
   [SerializeField] float _speed = 2;
   public enum TypeOfMotion
   {
@@ -19,51 +20,55 @@ public class MovingObject : MonoBehaviour
 
   [SerializeField] bool PlayOnAwake = true;
 
-  [Header("Movement possitions")]
   // node system 
 
-  public Transform[] _nodes = new Transform [3];
-  public float[] _waitTimes = new float [3];
+  [Space(3)]
+
+  public Transform[] _nodes = new Transform[3];
+  public float[] _waitTimes = new float[3];
 
   private int _currentNode = 0;
-  public bool _reverse = false;
+  private bool _reverse = false;
   // allows for multiple nodes each with their own wait time
 
   [Header("Audio")]
-[SerializeField] AudioClip _audioClip = null;
-public enum AudioPlayback
-{
-  LOOPING,
-  PLAY_AT_START,
-  PLAY_AT_END,
+  [SerializeField] AudioClip _audioClip = null;
+  public enum AudioPlayback
+  {
+    LOOPING,
+    PLAY_AT_START,
+    PLAY_AT_END,
+  };
+  public AudioPlayback _audioPlayback;
 
-}
 
-    
-    void Awake()
-    {
-       
-    }
+  void Awake()
+  {
 
-    // Update is called once per frame
-    void Update()
-    {
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
     Debug.Log(_currentNode);
     if (PlayOnAwake)
     {
       MoveObject();
     }
-    
-    }
 
-    public void MoveObject()
+  }
+
+  public void MoveObject()
   {
     if (Vector3.Distance(transform.position, _nodes[_currentNode].position) < 0.1f)
     {
 
       StartCoroutine(Wait(_speed));
+      
       if (_typeOfMotion == TypeOfMotion.LOOPING)
       {
+        PlayAtStart();
+        PlayLoop();
         if (_currentNode == _nodes.Length - 1)
         {
           _reverse = true;
@@ -82,6 +87,8 @@ public enum AudioPlayback
       }
       if (_typeOfMotion == TypeOfMotion.BACK_AND_FORTH)
       {
+        PlayAtStart();
+        PlayLoop();
         bool CycleMade = false;
         if (CycleMade == true)
         {
@@ -108,20 +115,25 @@ public enum AudioPlayback
         if (_currentNode <= 0 && _reverse == true)
         {
           _currentNode = 0;
+          PlayAtEnd();
           CycleMade = true;
         }
       }
 
       if (_typeOfMotion == TypeOfMotion.ONE_WAY)
       {
+      PlayAtStart();
+      PlayLoop();
         _currentNode++;
-        if (_currentNode >= _nodes.Length - 1) 
+        if (_currentNode >= _nodes.Length - 1)
         {
-        _currentNode = _nodes.Length - 1;
+          _currentNode = _nodes.Length - 1;
+          PlayAtEnd();
           return;
         }
 
       }
+     
     }
 
 
@@ -130,10 +142,43 @@ public enum AudioPlayback
 
   }
 
-  private IEnumerator Wait (float currentSpeed) 
+  private IEnumerator Wait(float currentSpeed)
   {
     _speed = 0;
     yield return new WaitForSeconds(_waitTimes[_currentNode]);
     _speed = currentSpeed;
+  }
+
+  private void PlayLoop()
+  {
+    if (_audioPlayback == AudioPlayback.LOOPING)
+    {
+      GetComponent<AudioSource>().loop = true;
+      GetComponent<AudioSource>().Play();
+    }
+    else { GetComponent<AudioSource>().loop = false; }
+
+
+  }
+  private void PlayAtEnd()
+  {
+  bool played = false;
+    if (_audioPlayback == AudioPlayback.PLAY_AT_END && _currentNode == _nodes.Length -1 && played == false)
+    {
+      GetComponent<AudioSource>().Play();
+      played = true;
+
+    }
+  }
+
+  private void PlayAtStart()
+  {
+  bool played = false;
+    if (_audioPlayback == AudioPlayback.PLAY_AT_START && _currentNode == 0 && played == false)
+    {
+      GetComponent<AudioSource>().Play();
+      played= true;
+
+    }
   }
 }
