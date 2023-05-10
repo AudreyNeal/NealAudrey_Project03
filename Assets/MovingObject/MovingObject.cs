@@ -32,7 +32,7 @@ public class MovingObject : MonoBehaviour
   // allows for multiple nodes each with their own wait time
 
   [Header("Audio")]
-  [SerializeField] AudioClip _audioClip = null;
+  [SerializeField] AudioClip _audioToPlay = null;
   public enum AudioPlayback
   {
     LOOPING,
@@ -151,34 +151,46 @@ public class MovingObject : MonoBehaviour
 
   private void PlayLoop()
   {
-    if (_audioPlayback == AudioPlayback.LOOPING)
+    if (_audioToPlay != null && GetComponent<AudioSource>() != null)
     {
-      GetComponent<AudioSource>().loop = true;
-      GetComponent<AudioSource>().Play();
+      if (_audioPlayback == AudioPlayback.LOOPING)
+      {
+        GetComponent<AudioSource>().loop = true;
+        GetComponent<AudioSource>().clip = _audioToPlay;
+        GetComponent<AudioSource>().Play();
+      }
+      else { GetComponent<AudioSource>().loop = false; }
     }
-    else { GetComponent<AudioSource>().loop = false; }
 
 
   }
   private void PlayAtEnd()
   {
-  bool played = false;
-    if (_audioPlayback == AudioPlayback.PLAY_AT_END && _currentNode == _nodes.Length -1 && played == false)
+    if (_audioToPlay != null && GetComponent<AudioSource>() != null)
     {
-      GetComponent<AudioSource>().Play();
-      played = true;
+      bool played = false;
+      if (_audioPlayback == AudioPlayback.PLAY_AT_END && _currentNode == _nodes.Length - 1 && played == false)
+      {
+        GetComponent<AudioSource>().clip = _audioToPlay;
+        GetComponent<AudioSource>().Play();
+        played = true;
 
+      }
     }
-  }
+    }
 
-  private void PlayAtStart()
+    private void PlayAtStart()
   {
-  bool played = false;
-    if (_audioPlayback == AudioPlayback.PLAY_AT_START && _currentNode == 0 && played == false)
+    if (_audioToPlay != null && GetComponent<AudioSource>() != null)
     {
-      GetComponent<AudioSource>().Play();
-      played= true;
+      bool played = false;
+      if (_audioPlayback == AudioPlayback.PLAY_AT_START && _currentNode == 0 && played == false)
+      {
+        GetComponent<AudioSource>().clip = _audioToPlay;
+        GetComponent<AudioSource>().Play();
+        played = true;
 
+      }
     }
   }
 }
